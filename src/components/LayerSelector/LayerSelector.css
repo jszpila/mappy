@@ -1,0 +1,41 @@
+.layer-selector {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background-color: #fff;
+  padding: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  z-index: 100;
+  min-width: 10vw;
+}
+
+.layer-selector__title {
+  font-size: 18px;
+  line-height: 24px;
+  font-weight: bold;
+  margin: 0;
+  padding: 0;
+}
+
+.layer-selector__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.layer-selector__item {
+  font-size: 16px;
+  line-height: 28px;
+  cursor: pointer;
+  margin: 0;
+  padding: 0;
+}
+
+.layer-selector__item input {
+  margin-right: 8px;
+}
+
+.layer-selector__item label,
+.layer-selector__item input {
+  cursor: pointer;
+}
