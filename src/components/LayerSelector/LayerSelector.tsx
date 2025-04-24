@@ -2,6 +2,9 @@ import { LayerConfig } from "../../const/layer";
 
 import "./LayerSelector.css";
 
+// TODO: refactor to leverage useControl; however, seeing lots of conflicts documented implementations  
+//  https://visgl.github.io/react-map-gl/docs/api-reference/maplibre/use-control
+
 interface IProps {
   onSelectLayer: (layerName: string, isChecked: boolean) => void;
   visibleLayers: string[];
