@@ -12,7 +12,7 @@
 .layer-selector__title {
   font-size: 18px;
   line-height: 24px;
-  font-weight: bold;
+  font-weight: 700;
   margin: 0;
   padding: 0;
 }
@@ -29,6 +29,7 @@
   cursor: pointer;
   margin: 0;
   padding: 0;
+  position: relative;
 }
 
 .layer-selector__item input {
@@ -38,4 +39,16 @@
 .layer-selector__item label,
 .layer-selector__item input {
   cursor: pointer;
+}
+
+.layer-selector__item:hover {
+  background-color: #f0f0f0;
+}
+
+.layer-selector__icon {
+  width: 16x;
+  height: 16px;
+  margin-right: 8px;
+  position: relative;
+  top: 2px
 }

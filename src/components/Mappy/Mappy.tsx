@@ -3,10 +3,15 @@ import {type MapViewState, type LayersList, PickingInfo } from "@deck.gl/core/ty
 import { GeoJsonLayer } from "@deck.gl/layers/typed";
 import { Map } from "react-map-gl/maplibre";
 import { useState } from "react";
-import { gasStations } from "../../data/gasStations";
-import { groceryStores } from "../../data/groceryStores";
 import LayerSelector from "../LayerSelector/LayerSelector";
 import Popup from "../Popup/Popup";
+import { LayerConfig } from "../../const/layer";
+
+// TODO:
+// - [ ] type GasStation, GroceryStore
+// - [ ] use react-map-gl's Popup instead of custom Popup
+// - [ ] use icons for map markers
+// - [ ] clean up
 
 const INITIAL_VIEW_STATE: MapViewState = {
   longitude: -77,
@@ -18,14 +23,14 @@ const MAP_STYLE =
   "https://basemaps.cartocdn.com/gl/positron-nolabels-gl-style/style.json";
 
 const Mappy = () => {
-  const GasStationLayerName = gasStations.name;
-  const GroceryStoreLayerName = groceryStores.name;
+  const { GasStationsLayerConfig, GroceryStoresLayerConfig } = LayerConfig;
 
-  const [visibleLayers, setVisibleLayers] = useState([
-    GasStationLayerName,
-    GroceryStoreLayerName,
+  const [visibleLayers, setVisibleLayers] = useState<string[]>([
+    GasStationsLayerConfig.id,
+    GroceryStoresLayerConfig.id,
   ]);
 
+  // TODO: type GasStations and GroceryStores
   const [selectedLocation, setSelectedLocation] = useState<any>(null);
   const [popupPosition, setPopupPosition] = useState<{ x: number; y: number }>({
     x: 0,
@@ -47,70 +52,68 @@ const Mappy = () => {
     setSelectedLocation(null);
   };
 
-  const GasStationsLayer = new GeoJsonLayer({
-    id: GasStationLayerName,
-    data: gasStations,
-    getPointRadius: 25,
-    getFillColor: [255, 0, 0],
-    pickable: true,
-    visible: visibleLayers.includes(GasStationLayerName),
-    onClick: handleLocationClick,
-  });
-
-  const GroceryStoresLayer = new GeoJsonLayer({
-    id: GroceryStoreLayerName,
-    data: groceryStores,
-    getPointRadius: 25,
-    getFillColor: [0, 0, 255],
-    pickable: true,
-    visible: visibleLayers.includes(GroceryStoreLayerName),
-    onClick: handleLocationClick,
-  });
-
   const [layers, setLayers] = useState<LayersList>([
-    GasStationsLayer,
-    GroceryStoresLayer,
+    new GeoJsonLayer({
+      id: GasStationsLayerConfig.id,
+      data: GasStationsLayerConfig.data,
+      getPointRadius: 25,
+      getFillColor: [255, 0, 0],
+      pickable: true,
+      visible: visibleLayers.includes(GasStationsLayerConfig.id),
+      onClick: handleLocationClick,
+    }),
+    new GeoJsonLayer({
+      id: GroceryStoresLayerConfig.id,
+      data: GroceryStoresLayerConfig.data,
+      getPointRadius: 25,
+      getFillColor: [0, 0, 255],
+      pickable: true,
+      visible: visibleLayers.includes(GroceryStoresLayerConfig.id),
+      onClick: handleLocationClick,
+    }),
   ]);
 
   function handleLayerSelect(layerId: string, isChecked: boolean) {
-    // FIXME: documentation specifically states *not* to do this, having trouble with alternate approaches
-    //    https://deck.gl/docs/api-reference/core/layer#visible
-    setVisibleLayers((prevVisibleLayerIds) => {
-      const newVisibleLayers = isChecked
-        ? [...prevVisibleLayerIds, layerId]
-        : prevVisibleLayerIds.filter((id) => id !== layerId);
+    const prevVisibleLayerIds = visibleLayers;
+    const newVisibleLayers = isChecked
+      ? [...prevVisibleLayerIds, layerId]
+      : prevVisibleLayerIds.filter((id) => id !== layerId);
 
-      const updatedLayers = [
-        new GeoJsonLayer({
-          id: GasStationLayerName,
-          data: gasStations,
-          getPointRadius: 25,
-          getFillColor: [255, 0, 0],
-          pickable: true,
-          visible: newVisibleLayers.includes(GasStationLayerName),
-          onClick: handleLocationClick,
-        }),
-        new GeoJsonLayer({
-          id: GroceryStoreLayerName,
-          data: groceryStores,
-          getPointRadius: 25,
-          getFillColor: [0, 0, 255],
-          pickable: true,
-          visible: newVisibleLayers.includes(GroceryStoreLayerName),
-          onClick: handleLocationClick,
-        }),
-      ];
-
-      setLayers(updatedLayers);
-      return newVisibleLayers;
-    });
+    const updatedLayers = [
+      new GeoJsonLayer({
+        id: GasStationsLayerConfig.id,
+        data: GasStationsLayerConfig.data,
+        getPointRadius: 25,
+        getFillColor: [255, 0, 0],
+        pickable: true,
+        visible: newVisibleLayers.includes(GasStationsLayerConfig.id),
+        onClick: handleLocationClick,
+      }),
+      new GeoJsonLayer({
+        id: GroceryStoresLayerConfig.id,
+        data: GroceryStoresLayerConfig.data,
+        getPointRadius: 25,
+        getFillColor: [0, 0, 255],
+        pickable: true,
+        visible: newVisibleLayers.includes(GroceryStoresLayerConfig.id),
+        onClick: handleLocationClick,
+      }),
+    ];
 
     setSelectedLocation(null);
+    setVisibleLayers([...newVisibleLayers]);
+
+    // FIXME: documentation specifically states *not* to do this, having trouble with alternate approaches
+    //    https://deck.gl/docs/api-reference/core/layer#visible
+    setLayers([...updatedLayers]);
   }
 
   return (
     <>
-      <LayerSelector onSelectLayer={handleLayerSelect} />
+      <LayerSelector
+        onSelectLayer={handleLayerSelect}
+        visibleLayers={visibleLayers}
+      />
       <DeckGL
         layers={layers}
         initialViewState={INITIAL_VIEW_STATE}
@@ -120,7 +123,7 @@ const Mappy = () => {
       </DeckGL>
       {selectedLocation && (
         <Popup
-          feature={selectedLocation}
+          location={selectedLocation}
           x={popupPosition.x}
           y={popupPosition.y}
           onClose={handleClosePopup}

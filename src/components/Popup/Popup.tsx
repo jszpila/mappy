@@ -6,13 +6,13 @@ import './Popup.css';
 
 interface IProps {
   // FIXME: create GasStation, GroceryStore types
-  feature: any;
+  location: any;
   x: number;
   y: number;
   onClose: () => void;
 }
 
-const Popup = ({ feature, x, y, onClose }: IProps) => {
+const Popup = ({ location: feature, x, y, onClose }: IProps) => {
   if (!feature) return null;
 
   // NOTE: doing some minor sniffing to handle slight differences in data & display
