@@ -96,7 +96,10 @@ const Mappy = () => {
 
   return (
     <>
-      {/* TODO: useControl  */}
+      {/* 
+        TODO: refactor to leverage useControl  
+          https://visgl.github.io/react-map-gl/docs/api-reference/maplibre/use-control
+      */}
       <LayerSelector
         onSelectLayer={handleLayerSelect}
         visibleLayers={visibleLayers}
@@ -108,6 +111,10 @@ const Mappy = () => {
       >
         <Map reuseMaps mapStyle={MAP_STYLE}>
           {selectedLocation && (
+            // FIXME: popup is showing under map markers - looks weird & prevents interactions 
+            //   Investigate interleaved vs overlaid approaches
+            //   Note that below examples provide a general guide but contain multiple type errors in implementation
+            //   https://deck.gl/docs/developer-guide/base-maps/using-with-maplibre
             <Popup
               longitude={selectedLocation.geometry.coordinates[0]}
               latitude={selectedLocation.geometry.coordinates[1]}
@@ -115,6 +122,7 @@ const Mappy = () => {
               maxWidth="360px"
               closeOnClick={true}
               onClose={() => setSelectedLocation(undefined)}
+              offset={[0, -15]}
             >
               <PopupBody location={selectedLocation} />
             </Popup>
