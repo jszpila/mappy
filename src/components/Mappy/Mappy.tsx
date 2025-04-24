@@ -1,22 +1,23 @@
 import DeckGL from "@deck.gl/react/typed";
-import {type MapViewState, type LayersList, PickingInfo } from "@deck.gl/core/typed";
+import {
+  type MapViewState,
+  type LayersList,
+  PickingInfo,
+} from "@deck.gl/core/typed";
 import { GeoJsonLayer } from "@deck.gl/layers/typed";
-import { Map } from "react-map-gl/maplibre";
+import { Map, Popup } from "react-map-gl/maplibre";
 import { useState } from "react";
 import LayerSelector from "../LayerSelector/LayerSelector";
-import Popup from "../Popup/Popup";
 import { LayerConfig } from "../../const/layer";
-
-// TODO:
-// - [ ] type GasStation, GroceryStore
-// - [ ] use react-map-gl's Popup instead of custom Popup
-// - [ ] use icons for map markers
-// - [ ] clean up
+import { GasStation, GroceryStore } from "../../interfaces";
+import PopupBody from "../PopupBody/PopupBody";
 
 const INITIAL_VIEW_STATE: MapViewState = {
   longitude: -77,
   latitude: 38.9,
   zoom: 12,
+  bearing: 0,
+  pitch: 0,
 };
 
 const MAP_STYLE =
@@ -30,26 +31,18 @@ const Mappy = () => {
     GroceryStoresLayerConfig.id,
   ]);
 
-  // TODO: type GasStations and GroceryStores
-  const [selectedLocation, setSelectedLocation] = useState<any>(null);
-  const [popupPosition, setPopupPosition] = useState<{ x: number; y: number }>({
-    x: 0,
-    y: 0,
-  });
+  const [selectedLocation, setSelectedLocation] = useState<
+    GasStation | GroceryStore | undefined
+  >(undefined);
 
-  // FIXME: popup position on zoom or scroll
   const handleLocationClick = (info: PickingInfo) => {
     if (info.object) {
-      setSelectedLocation(info.object);
-      setPopupPosition({
-        x: info.x,
-        y: info.y,
-      });
+      setSelectedLocation(info.object as GasStation | GroceryStore);
     }
   };
 
   const handleClosePopup = () => {
-    setSelectedLocation(null);
+    setSelectedLocation(undefined);
   };
 
   const [layers, setLayers] = useState<LayersList>([
@@ -74,10 +67,9 @@ const Mappy = () => {
   ]);
 
   function handleLayerSelect(layerId: string, isChecked: boolean) {
-    const prevVisibleLayerIds = visibleLayers;
     const newVisibleLayers = isChecked
-      ? [...prevVisibleLayerIds, layerId]
-      : prevVisibleLayerIds.filter((id) => id !== layerId);
+      ? [...visibleLayers, layerId]
+      : visibleLayers.filter((id) => id !== layerId);
 
     const updatedLayers = [
       new GeoJsonLayer({
@@ -100,12 +92,8 @@ const Mappy = () => {
       }),
     ];
 
-    setSelectedLocation(null);
-    setVisibleLayers([...newVisibleLayers]);
-
-    // FIXME: documentation specifically states *not* to do this, having trouble with alternate approaches
-    //    https://deck.gl/docs/api-reference/core/layer#visible
-    setLayers([...updatedLayers]);
+    setVisibleLayers(newVisibleLayers);
+    setLayers(updatedLayers);
   }
 
   return (
@@ -119,16 +107,20 @@ const Mappy = () => {
         initialViewState={INITIAL_VIEW_STATE}
         controller={true}
       >
-        <Map reuseMaps mapStyle={MAP_STYLE} />
+        <Map reuseMaps mapStyle={MAP_STYLE}>
+          {selectedLocation && (
+            <Popup
+              anchor="top"
+              longitude={selectedLocation.geometry.coordinates[0]}
+              latitude={selectedLocation.geometry.coordinates[1]}
+              closeButton={true}
+              onClose={handleClosePopup}
+            >
+              <PopupBody location={selectedLocation} />
+            </Popup>
+          )}
+        </Map>
       </DeckGL>
-      {selectedLocation && (
-        <Popup
-          location={selectedLocation}
-          x={popupPosition.x}
-          y={popupPosition.y}
-          onClose={handleClosePopup}
-        />
-      )}
     </>
   );
 };

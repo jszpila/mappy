@@ -1,5 +1,5 @@
-.popup {
-  position: absolute;
+.popup-body {
+  /* position: absolute;
   background: #FFF;
   padding: 12px;
   max-width: 300px;
@@ -7,10 +7,10 @@
   pointer-events: auto;
   transform: translate(-50%, -100%);
   margin-top: -10px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2); */
 }
 
-.popup:after {
+/* .popup:after {
   content: '';
   position: absolute;
   bottom: -10px;
@@ -19,9 +19,9 @@
   border-width: 10px 10px 0;
   border-style: solid;
   border-color: #FFF transparent transparent;
-}
+} */
 
-.popup__close {
+/* .popup-body__close {
   position: absolute;
   top: 5px;
   right: 5px;
@@ -30,44 +30,41 @@
   font-size: 18px;
   cursor: pointer;
   color: #666;
-}
+} */
 
-.popup__close:hover {
+/* .popup-body__close:hover {
   color: #000;
-}
+} */
 
-.popup__title {
+.popup-body__title {
   margin-top: 0;
   margin-bottom: 10px;
   font-size: 16px;
 }
 
-.popup__content {
+.popup-body__content {
   font-size: 14px;
 }
 
-.popup__details {
+.popup-body__details {
   list-style: none;
   margin: 0;
   padding: 0;
 }
 
-.popup__label {
+.popup-body__details li {
+  line-height: 22px;
+}
+
+.popup-body__label {
   font-weight: bold;
   margin-right: 5px;
 }
 
-.popup__icon {
+.popup-body__icon {
   position: relative;
+  top: 5px;
   width: 20px;
   height: 20px;
   margin-right: 8px;
-}
-
-.popup__icon--gas-station {
-  top: 5px;
-}
-
-.popup__icon--grocery-store {
-  top: 5px;
 }
