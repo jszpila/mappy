@@ -20,9 +20,8 @@ const PopupBody = ({ location }: IProps) => {
     : location.properties.STORENAME;
   
   const address = location.properties.ADDRESS;
-  const phone = location.properties.PHONE 
-    ? location.properties.PHONE.toString().replace(/(\d{3})(\d{3})(\d{4})/, '($1) $2-$3') 
-    : 'N/A';
+  const phone = location.properties.PHONE;
+  const formattedPhone = phone.toString().replace(/(\d{3})(\d{3})(\d{4})/, '($1) $2-$3');
   
   const additionalInfo = isGasStation 
     ? { pumps: location.properties.NUMBER_OF_PUMPS || 'N/A' }
@@ -49,7 +48,7 @@ const PopupBody = ({ location }: IProps) => {
           </li>
           <li>
             <span className="popup-body__label">Phone:</span>
-            {phone}
+            <a href={`tel:+1${phone}`}>{formattedPhone}</a>
           </li>
           {isGasStation ? (
             <li>
