@@ -73,9 +73,39 @@ const Mappy = () => {
   ]);
 
   function handleLayerSelect(layerId: string, isChecked: boolean) {
-    console.log(
-      `Layer ${layerId} is now ${isChecked ? "enabled" : "disabled"}`
-    );
+    // FIXME: documentation specifically states *not* to do this, having trouble with alternate approaches
+    //    https://deck.gl/docs/api-reference/core/layer#visible
+    setVisibleLayers((prevVisibleLayerIds) => {
+      const newVisibleLayers = isChecked
+        ? [...prevVisibleLayerIds, layerId]
+        : prevVisibleLayerIds.filter((id) => id !== layerId);
+
+      const updatedLayers = [
+        new GeoJsonLayer({
+          id: GasStationLayerName,
+          data: gasStations,
+          getPointRadius: 25,
+          getFillColor: [255, 0, 0],
+          pickable: true,
+          visible: newVisibleLayers.includes(GasStationLayerName),
+          onClick: handleLocationClick,
+        }),
+        new GeoJsonLayer({
+          id: GroceryStoreLayerName,
+          data: groceryStores,
+          getPointRadius: 25,
+          getFillColor: [0, 0, 255],
+          pickable: true,
+          visible: newVisibleLayers.includes(GroceryStoreLayerName),
+          onClick: handleLocationClick,
+        }),
+      ];
+
+      setLayers(updatedLayers);
+      return newVisibleLayers;
+    });
+
+    setSelectedLocation(null);
   }
 
   return (
