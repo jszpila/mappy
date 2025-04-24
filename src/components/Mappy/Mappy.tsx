@@ -12,6 +12,8 @@ import { LayerConfig } from "../../const/layer";
 import { GasStation, GroceryStore } from "../../interfaces";
 import PopupBody from "../PopupBody/PopupBody";
 
+import "maplibre-gl/dist/maplibre-gl.css";
+
 const INITIAL_VIEW_STATE: MapViewState = {
   longitude: -77,
   latitude: 38.9,
@@ -39,10 +41,6 @@ const Mappy = () => {
     if (info.object) {
       setSelectedLocation(info.object as GasStation | GroceryStore);
     }
-  };
-
-  const handleClosePopup = () => {
-    setSelectedLocation(undefined);
   };
 
   const [layers, setLayers] = useState<LayersList>([
@@ -98,6 +96,7 @@ const Mappy = () => {
 
   return (
     <>
+      {/* TODO: useControl  */}
       <LayerSelector
         onSelectLayer={handleLayerSelect}
         visibleLayers={visibleLayers}
@@ -110,11 +109,12 @@ const Mappy = () => {
         <Map reuseMaps mapStyle={MAP_STYLE}>
           {selectedLocation && (
             <Popup
-              anchor="top"
               longitude={selectedLocation.geometry.coordinates[0]}
               latitude={selectedLocation.geometry.coordinates[1]}
               closeButton={true}
-              onClose={handleClosePopup}
+              maxWidth="360px"
+              closeOnClick={true}
+              onClose={() => setSelectedLocation(undefined)}
             >
               <PopupBody location={selectedLocation} />
             </Popup>
