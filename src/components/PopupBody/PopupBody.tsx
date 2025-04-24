@@ -12,7 +12,7 @@ interface IProps {
 const PopupBody = ({ location }: IProps) => {
   if (!location) return null;
 
-  // NOTE: doing some minor sniffing to handle slight differences in data & display
+  // TODO: implement transform to enforce more consistent structure
   const isGasStation = location.properties.NAME !== undefined;
   
   const title = isGasStation 
@@ -28,13 +28,13 @@ const PopupBody = ({ location }: IProps) => {
     ? { pumps: location.properties.NUMBER_OF_PUMPS || 'N/A' }
     : { zipcode: location.properties.ZIPCODE || 'N/A' };
 
+  const icon = isGasStation ? gasStationIcon : storeIcon;
+
   return (
     <div className="popup-body">
       <h3 className="popup-body__title">
         {
-          isGasStation 
-            ? <img src={gasStationIcon} alt="Gas Station" className="popup-body__icon popup-body__icon--gas-station" /> 
-            : <img src={storeIcon} alt="Grocery Store" className="popup-body__icon popup-body__icon--grocery-store" />
+          <img src={icon} alt={isGasStation ? "Gas Station" : "Grocery Store"} className="popup-body__icon"/>
         }
         {title}</h3>
       <div className="popup-body__content">
@@ -58,7 +58,7 @@ const PopupBody = ({ location }: IProps) => {
             </li>
           ) : (
             <li>
-              <span className="popup-body__label">Zipcode:</span>
+              <span className="popup-body__label">Zipcode:</span> 
               {additionalInfo.zipcode}
             </li>
           )}
