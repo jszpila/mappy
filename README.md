@@ -49,12 +49,3 @@ Two Options on submission:
     - Remove ./node_modules before submitting the repository  
     - Once you are ready for submission, please zip your file and name it `{Your First Name}{Your Last Name}_DeckGL_Interview.zip`
 
-### TODO
-
-- [ ] popup on click
-- [ ] use icon instead of circle
-
-### FIXME
-
-- [ ] layer visibiility toggle
-- [ ] use non-stupid structure for generating layer list
