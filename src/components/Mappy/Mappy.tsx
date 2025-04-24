@@ -1,11 +1,12 @@
 import DeckGL from "@deck.gl/react/typed";
-import { type MapViewState, type LayersList } from "@deck.gl/core/typed";
+import {type MapViewState, type LayersList, PickingInfo } from "@deck.gl/core/typed";
 import { GeoJsonLayer } from "@deck.gl/layers/typed";
 import { Map } from "react-map-gl/maplibre";
 import { useState } from "react";
 import { gasStations } from "../../data/gasStations";
 import { groceryStores } from "../../data/groceryStores";
 import LayerSelector from "../LayerSelector/LayerSelector";
+import Popup from "../Popup/Popup";
 
 const INITIAL_VIEW_STATE: MapViewState = {
   longitude: -77,
@@ -19,11 +20,32 @@ const MAP_STYLE =
 const Mappy = () => {
   const GasStationLayerName = gasStations.name;
   const GroceryStoreLayerName = groceryStores.name;
-  
+
   const [visibleLayers, setVisibleLayers] = useState([
     GasStationLayerName,
     GroceryStoreLayerName,
   ]);
+
+  const [selectedLocation, setSelectedLocation] = useState<any>(null);
+  const [popupPosition, setPopupPosition] = useState<{ x: number; y: number }>({
+    x: 0,
+    y: 0,
+  });
+
+  // FIXME: popup position on zoom or scroll
+  const handleLocationClick = (info: PickingInfo) => {
+    if (info.object) {
+      setSelectedLocation(info.object);
+      setPopupPosition({
+        x: info.x,
+        y: info.y,
+      });
+    }
+  };
+
+  const handleClosePopup = () => {
+    setSelectedLocation(null);
+  };
 
   const GasStationsLayer = new GeoJsonLayer({
     id: GasStationLayerName,
@@ -32,6 +54,7 @@ const Mappy = () => {
     getFillColor: [255, 0, 0],
     pickable: true,
     visible: visibleLayers.includes(GasStationLayerName),
+    onClick: handleLocationClick,
   });
 
   const GroceryStoresLayer = new GeoJsonLayer({
@@ -41,6 +64,7 @@ const Mappy = () => {
     getFillColor: [0, 0, 255],
     pickable: true,
     visible: visibleLayers.includes(GroceryStoreLayerName),
+    onClick: handleLocationClick,
   });
 
   const [layers, setLayers] = useState<LayersList>([
@@ -49,15 +73,9 @@ const Mappy = () => {
   ]);
 
   function handleLayerSelect(layerId: string, isChecked: boolean) {
-    console.log(`Layer ${layerId} is now ${isChecked ? "enabled" : "disabled"}`);
-  
-    setVisibleLayers((prevVisibleLayerIds) => {
-      if (prevVisibleLayerIds.includes(layerId)) {
-        return prevVisibleLayerIds.filter((id) => id !== layerId);
-      } else {
-        return [...visibleLayers, layerId];
-      }
-    });
+    console.log(
+      `Layer ${layerId} is now ${isChecked ? "enabled" : "disabled"}`
+    );
   }
 
   return (
@@ -70,6 +88,14 @@ const Mappy = () => {
       >
         <Map reuseMaps mapStyle={MAP_STYLE} />
       </DeckGL>
+      {selectedLocation && (
+        <Popup
+          feature={selectedLocation}
+          x={popupPosition.x}
+          y={popupPosition.y}
+          onClose={handleClosePopup}
+        />
+      )}
     </>
   );
 };
