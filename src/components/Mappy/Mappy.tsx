@@ -4,12 +4,12 @@ import {
   PickingInfo,
 } from "@deck.gl/core/typed";
 import { GeoJsonLayer } from "@deck.gl/layers/typed";
-import { Map, Popup } from "react-map-gl/maplibre";
+import { Map } from "react-map-gl/maplibre";
 import { useState } from "react";
 import LayerSelector from "../LayerSelector/LayerSelector";
 import { LayerConfig } from "../../const/layer";
 import { GasStation, GroceryStore } from "../../interfaces";
-import PopupBody from "../PopupBody/PopupBody";
+import Popup from "../Popup/Popup";
 
 import "maplibre-gl/dist/maplibre-gl.css";
 
@@ -36,7 +36,7 @@ const Mappy = () => {
     GasStation | GroceryStore | undefined
   >(undefined);
 
-  const handleLocationClick = (info: PickingInfo) => {
+  const handleLocationClick = (info: PickingInfo) => {    
     if (info.object) {
       setSelectedLocation(info.object as GasStation | GroceryStore);
     }
@@ -74,10 +74,6 @@ const Mappy = () => {
 
   return (
     <>
-      {/* 
-        TODO: refactor to leverage useControl  
-          https://visgl.github.io/react-map-gl/docs/api-reference/maplibre/use-control
-      */}
       <LayerSelector
         onSelectLayer={handleLayerSelect}
         visibleLayers={visibleLayers}
@@ -89,21 +85,10 @@ const Mappy = () => {
       >
         <Map reuseMaps mapStyle={MAP_STYLE}>
           {selectedLocation && (
-            // FIXME: popup is showing under map markers - looks weird & prevents interactions 
-            //   Investigate interleaved vs overlaid approaches
-            //   Note that below examples provide a general guide but contain multiple type errors in implementation
-            //   https://deck.gl/docs/developer-guide/base-maps/using-with-maplibre
-            <Popup
-              longitude={selectedLocation.geometry.coordinates[0]}
-              latitude={selectedLocation.geometry.coordinates[1]}
-              closeButton={true}
-              maxWidth="360px"
-              closeOnClick={true}
-              onClose={() => setSelectedLocation(undefined)}
-              offset={[0, -15]}
-            >
-              <PopupBody location={selectedLocation} />
-            </Popup>
+            <Popup 
+              location={selectedLocation} 
+              closeHandler={() => setSelectedLocation(undefined)} 
+            />
           )}
         </Map>
       </DeckGL>
