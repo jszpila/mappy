@@ -1,7 +1,6 @@
 import DeckGL from "@deck.gl/react/typed";
 import {
   type MapViewState,
-  type LayersList,
   PickingInfo,
 } from "@deck.gl/core/typed";
 import { GeoJsonLayer } from "@deck.gl/layers/typed";
@@ -43,55 +42,34 @@ const Mappy = () => {
     }
   };
 
-  const [layers, setLayers] = useState<LayersList>([
-    new GeoJsonLayer({
-      id: GasStationsLayerConfig.id,
-      data: GasStationsLayerConfig.data,
-      getPointRadius: 25,
-      getFillColor: [255, 0, 0],
-      pickable: true,
-      visible: visibleLayers.includes(GasStationsLayerConfig.id),
-      onClick: handleLocationClick,
-    }),
-    new GeoJsonLayer({
-      id: GroceryStoresLayerConfig.id,
-      data: GroceryStoresLayerConfig.data,
-      getPointRadius: 25,
-      getFillColor: [0, 0, 255],
-      pickable: true,
-      visible: visibleLayers.includes(GroceryStoresLayerConfig.id),
-      onClick: handleLocationClick,
-    }),
-  ]);
-
-  function handleLayerSelect(layerId: string, isChecked: boolean) {
-    const newVisibleLayers = isChecked
-      ? [...visibleLayers, layerId]
-      : visibleLayers.filter((id) => id !== layerId);
-
-    const updatedLayers = [
+  const layers = [
+    visibleLayers.includes(GasStationsLayerConfig.id) && 
       new GeoJsonLayer({
         id: GasStationsLayerConfig.id,
         data: GasStationsLayerConfig.data,
         getPointRadius: 25,
         getFillColor: [255, 0, 0],
         pickable: true,
-        visible: newVisibleLayers.includes(GasStationsLayerConfig.id),
         onClick: handleLocationClick,
       }),
+    visibleLayers.includes(GroceryStoresLayerConfig.id) &&
       new GeoJsonLayer({
         id: GroceryStoresLayerConfig.id,
         data: GroceryStoresLayerConfig.data,
         getPointRadius: 25,
         getFillColor: [0, 0, 255],
         pickable: true,
-        visible: newVisibleLayers.includes(GroceryStoresLayerConfig.id),
         onClick: handleLocationClick,
       }),
-    ];
+  ];
 
-    setVisibleLayers(newVisibleLayers);
-    setLayers(updatedLayers);
+  function handleLayerSelect(layerId: string, isChecked: boolean) {
+    const newVisibleLayers = isChecked
+      ? [...visibleLayers, layerId]
+      : visibleLayers.filter((id) => id !== layerId);
+
+    setSelectedLocation(undefined);
+    setVisibleLayers([...newVisibleLayers]);
   }
 
   return (
