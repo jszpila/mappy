@@ -16,12 +16,14 @@ const INITIAL_VIEW_STATE: MapViewState = {
 const MAP_STYLE =
   "https://basemaps.cartocdn.com/gl/positron-nolabels-gl-style/style.json";
 
-
 const Mappy = () => {
   const GasStationLayerName = gasStations.name;
   const GroceryStoreLayerName = groceryStores.name;
-  const [isGasStattionLayerVisible, setIsGasStationLayerVisible] = useState<boolean>(true);
-  const [isGroceryStoreLayerVisible, setIsGroceryStoreLayerVisible] = useState<boolean>(true);
+  
+  const [visibleLayers, setVisibleLayers] = useState([
+    GasStationLayerName,
+    GroceryStoreLayerName,
+  ]);
 
   const GasStationsLayer = new GeoJsonLayer({
     id: GasStationLayerName,
@@ -29,7 +31,7 @@ const Mappy = () => {
     getPointRadius: 25,
     getFillColor: [255, 0, 0],
     pickable: true,
-    visible: isGasStattionLayerVisible,
+    visible: visibleLayers.includes(GasStationLayerName),
   });
 
   const GroceryStoresLayer = new GeoJsonLayer({
@@ -38,7 +40,7 @@ const Mappy = () => {
     getPointRadius: 25,
     getFillColor: [0, 0, 255],
     pickable: true,
-    visible: isGroceryStoreLayerVisible,
+    visible: visibleLayers.includes(GroceryStoreLayerName),
   });
 
   const [layers, setLayers] = useState<LayersList>([
@@ -46,11 +48,18 @@ const Mappy = () => {
     GroceryStoresLayer,
   ]);
 
-  function handleLayerSelect(id: string, isChecked: boolean) {
-    console.log(`Layer ${id} is now ${isChecked ? "enabled" : "disabled"}`);
+  function handleLayerSelect(layerId: string, isChecked: boolean) {
+    console.log(`Layer ${layerId} is now ${isChecked ? "enabled" : "disabled"}`);
+  
+    setVisibleLayers((prevVisibleLayerIds) => {
+      if (prevVisibleLayerIds.includes(layerId)) {
+        return prevVisibleLayerIds.filter((id) => id !== layerId);
+      } else {
+        return [...visibleLayers, layerId];
+      }
+    });
   }
 
-  // layers={visibleLayers}
   return (
     <>
       <LayerSelector onSelectLayer={handleLayerSelect} />
