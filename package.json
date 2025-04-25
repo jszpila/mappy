@@ -1,5 +1,13 @@
 {
-  "name": "interview-1",
+  "name": "Mappy",
+  "author": {
+    "name": "Jan Szpila"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jszpila/mappy.git"
+  },
+  "homepage": ".",
   "version": "0.1.0",
   "private": true,
   "dependencies": {

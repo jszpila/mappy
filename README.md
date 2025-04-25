@@ -45,6 +45,9 @@ You are trying to create a map that allows the user to view all the charging sta
 - `pointType: "circle"` is **acceptable**
   - *✅*
 
+## See It In Action
+[https://stuff.szpi.la/dev/mappy/](https://stuff.szpi.la/dev/mappy/)
+<!--
 ## Submission
 
 Two Options on submission:
@@ -56,3 +59,4 @@ Two Options on submission:
   2. Email & Zip  
     - Remove ./node_modules before submitting the repository  
     - Once you are ready for submission, please zip your file and name it `{Your First Name}{Your Last Name}_DeckGL_Interview.zip`
+-->
