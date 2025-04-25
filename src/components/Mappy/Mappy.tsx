@@ -63,7 +63,7 @@ const Mappy = () => {
         id: GroceryStoresLayerConfig.id,
         data: GroceryStoresLayerConfig.data,
         getPointRadius: 25,
-        getFillColor: [0, 0, 255],
+        getFillColor: [ 0, 0, 255],
         pickable: true,
         onClick: handleLocationClick,
       }),

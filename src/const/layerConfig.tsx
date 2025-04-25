@@ -6,7 +6,7 @@ import groceryStore from "../assets/store.svg"
 export const LayerConfig = {
   GasStationsLayerConfig: {
     id: gasStations.name,
-    color: "#00F",
+    color: "#F00",
     displayName: "Gas Stations",
     markerColor: [0, 0, 255],
     icon: gasStation,
@@ -14,7 +14,7 @@ export const LayerConfig = {
   },
   GroceryStoresLayerConfig: {
     id: groceryStores.name,
-    color: "#F00",
+    color: "#00F",
     makerColor: [255, 0, 0],
     displayName: "Grocery Stores",
     icon: groceryStore,
