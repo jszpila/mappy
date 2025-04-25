@@ -39,7 +39,7 @@ You are trying to create a map that allows the user to view all the charging sta
     - *Do we use common UI components and practices with consistent branding across multiple products? We may want to use an internal component library.*
     - *Do we want to adhere to a common aesthetic, UX, theme, or design system such as Material UI? Then we should probably use a third-party library.*
 - Can I open multiple containers?  
-  - *Due to time contstraints, the app does not permit multiple open popups but this could could be implemented via instantiating and tracking an array of PopUp coponents.*
+  - *Due to time contstraints, the app does not permit multiple open popups but this could could be implemented via instantiating and tracking an array of PopUp components.*
 - If I wanted to add more map layers, would you code this differently?
   - *Rudimentary support for multiple layers has been implemented, but a more sophisticated and dynamic approach can be built upon this foundational code*
 - `pointType: "circle"` is **acceptable**
