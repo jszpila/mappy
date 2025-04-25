@@ -1,4 +1,4 @@
-import { LayerConfig } from "../../const/layer";
+import { LayerConfig } from "../../const/layerConfig";
 
 import "./LayerSelector.css";
 
@@ -21,13 +21,14 @@ const LayerSelector = ({ onSelectLayer, visibleLayers }: IProps) => {
       <h2 className="layer-selector__title">Show me...</h2>
       <ul className="layer-selector__list">
         {Object.entries(LayerConfig).map(([layerName, layerConfig]) => (
-          <li key={layerConfig.id} className="layer-selector__item">
+          <li key={layerConfig.id} 
+            className="layer-selector__item"
+            style={{ color: layerConfig.color }}>
             <label htmlFor={layerConfig.id}>
               <input
                 type="checkbox"
                 id={layerConfig.id}
                 onChange={handleChange}
-
                 checked={visibleLayers.includes(layerConfig.id)}
               />
               <img

@@ -7,7 +7,7 @@ import { GeoJsonLayer } from "@deck.gl/layers/typed";
 import { Map } from "react-map-gl/maplibre";
 import { useState } from "react";
 import LayerSelector from "../LayerSelector/LayerSelector";
-import { LayerConfig } from "../../const/layer";
+import { LayerConfig } from "../../const/layerConfig";
 import { GasStation, GroceryStore } from "../../interfaces";
 import Popup from "../Popup/Popup";
 
@@ -36,9 +36,9 @@ const Mappy = () => {
     GasStation | GroceryStore | undefined
   >(undefined);
 
-  const handleLocationClick = ({object}: PickingInfo) => {
+  const handleLocationClick = ({ object }: PickingInfo) => {
     // NOTE: close popup if same location is clicked
-    if (selectedLocation && object 
+    if (selectedLocation && object
       && selectedLocation.geometry.coordinates === object.geometry.coordinates
     ) {
       setSelectedLocation(undefined);
@@ -47,8 +47,9 @@ const Mappy = () => {
     }
   };
 
+  // TODO: research how to efficiently convert to layerConfig.markerColor (number[]) to expected type
   const layers = [
-    visibleLayers.includes(GasStationsLayerConfig.id) && 
+    visibleLayers.includes(GasStationsLayerConfig.id) &&
       new GeoJsonLayer({
         id: GasStationsLayerConfig.id,
         data: GasStationsLayerConfig.data,
@@ -98,13 +99,13 @@ const Mappy = () => {
           !info.object && setSelectedLocation(undefined);
         }}
       >
-        <Map reuseMaps mapStyle={MAP_STYLE} >
-        {selectedLocation && (
-          <Popup
-            location={selectedLocation}
-            closeHandler={() => setSelectedLocation(undefined)}
-          />
-        )}
+        <Map reuseMaps mapStyle={MAP_STYLE}>
+          {selectedLocation && (
+            <Popup
+              location={selectedLocation}
+              closeHandler={() => setSelectedLocation(undefined)}
+            />
+          )}
         </Map>
       </DeckGL>
     </>
