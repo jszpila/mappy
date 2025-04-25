@@ -46,7 +46,7 @@ You are trying to create a map that allows the user to view all the charging sta
   - *✅*
 
 ## See It In Action
-[https://stuff.szpi.la/dev/mappy/](https://stuff.szpi.la/dev/mappy/)
+[dev.szpi.la/mappy](https://dev.szpi.la/mappy/)
 <!--
 ## Submission
 
