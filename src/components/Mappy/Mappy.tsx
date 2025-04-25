@@ -36,9 +36,14 @@ const Mappy = () => {
     GasStation | GroceryStore | undefined
   >(undefined);
 
-  const handleLocationClick = (info: PickingInfo) => {    
-    if (info.object) {
-      setSelectedLocation(info.object as GasStation | GroceryStore);
+  const handleLocationClick = ({object}: PickingInfo) => {
+    // NOTE: close popup if same location is clicked
+    if (selectedLocation && object 
+      && selectedLocation.geometry.coordinates === object.geometry.coordinates
+    ) {
+      setSelectedLocation(undefined);
+    } else if (object) {
+      setSelectedLocation(object as GasStation | GroceryStore);
     }
   };
 
@@ -78,18 +83,28 @@ const Mappy = () => {
         onSelectLayer={handleLayerSelect}
         visibleLayers={visibleLayers}
       />
+      {/* 
+        FIXME: popup is displaying under map markers, resulting in improper display & extra click handling logic.
+          Research how to rectify conflicting examples of interleave intregation mode.
+          https://deck.gl/docs/developer-guide/base-maps/using-with-maplibre
+      */}
       <DeckGL
         layers={layers}
         initialViewState={INITIAL_VIEW_STATE}
         controller={true}
+        getCursor={({ isHovering }) => (isHovering ? "pointer" : "crosshair")}
+        // NOTE: close popup if click outside of a location
+        onClick={(info) => {
+          !info.object && setSelectedLocation(undefined);
+        }}
       >
-        <Map reuseMaps mapStyle={MAP_STYLE}>
-          {selectedLocation && (
-            <Popup 
-              location={selectedLocation} 
-              closeHandler={() => setSelectedLocation(undefined)} 
-            />
-          )}
+        <Map reuseMaps mapStyle={MAP_STYLE} >
+        {selectedLocation && (
+          <Popup
+            location={selectedLocation}
+            closeHandler={() => setSelectedLocation(undefined)}
+          />
+        )}
         </Map>
       </DeckGL>
     </>
